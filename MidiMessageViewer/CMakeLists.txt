@@ -1,4 +1,4 @@
-# CMakeLists.txt - CMakeLists for building the project.
+# CMakeLists.txt - CMakeLists for building the main program.
 #
 # Copyright (C) 2024 Stephen Bonar
 #
@@ -14,13 +14,18 @@
 # See the License for the specific language governing permissionsand
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.5.0)
-project(MidiMessageViewer VERSION 0.1.0 LANGUAGES C CXX)
+# Define the sources used to build the executable.
+set(SOURCES MidiMessageViewer.cpp MainWindow.cpp)
 
-# Specify the C++ standard.
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+# Define the additional libraries the GUI needs to link with. 
+set(LIBRARIES wx::net wx::core wx::base)
 
-add_subdirectory(MidiMessageViewer)
+# Define the Windows GUI executable target.
+if(WIN32)
+    add_executable(MidiMessageViewer WIN32 ${SOURCES})
+else()
+    add_executable(MidiMessageViewer ${SOURCES})
+endif(WIN32)
 
-add_subdirectory(wxWidgets)
+# Links the executable with the libraries. 
+target_link_libraries(MidiMessageViewer ${LIBRARIES})
