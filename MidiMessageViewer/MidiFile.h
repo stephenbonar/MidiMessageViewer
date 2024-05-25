@@ -1,4 +1,4 @@
-// MainWindow.h - Declares the MainWindow class.
+// MidiFile.h - Declares the MidiFile class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,27 +14,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef MIDI_FILE_H
+#define MIDI_FILE_H
 
-#include <sstream>
-#include <wx/wx.h>
-#include <wx/listctrl.h>
-#include <wx/combobox.h>
+#include <string>
+#include <vector>
 #include "BinData.h"
-#include "MidiFile.h"
+#include "MidiHeaderData.h"
 
-class MainWindow : public wxFrame
+class MidiFile : public BinData::RawFile
 {
 public:
-    MainWindow();
-private:
-    wxComboBox* trackComboBox;
-    wxListView* messageListView;
+    MidiFile(std::string fileName) : 
+        BinData::RawFile{ fileName }, fileHeader{ BinData::Endianness::Big } 
+    { }
 
-    void OnOpen(wxCommandEvent& event);
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
+    BinData::ChunkHeader Header() { return fileHeader; }
+
+    MidiHeaderData HeaderData() { return headerData; }
+
+    void Load();
+private:
+    BinData::ChunkHeader fileHeader;
+    MidiHeaderData headerData;
 };
 
 #endif

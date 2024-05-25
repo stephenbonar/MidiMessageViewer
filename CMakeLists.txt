@@ -21,6 +21,11 @@ project(MidiMessageViewer VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Statically link wxWidgets.
+set(wxBUILD_SHARED OFF)
+
 add_subdirectory(MidiMessageViewer)
 
 add_subdirectory(wxWidgets)
+
+add_subdirectory(LibCppBinData)

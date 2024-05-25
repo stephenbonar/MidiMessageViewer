@@ -15,10 +15,13 @@
 # limitations under the License.
 
 # Define the sources used to build the executable.
-set(SOURCES MidiMessageViewer.cpp MainWindow.cpp)
+set(SOURCES MidiMessageViewer.cpp MainWindow.cpp MidiFile.cpp)
 
 # Define the additional libraries the GUI needs to link with. 
-set(LIBRARIES wx::net wx::core wx::base)
+set(LIBRARIES LibCppBinData wx::net wx::core wx::base)
+
+# Defines the locations of header files to include.
+set (INCLUDES ${PROJECT_SOURCE_DIR}/LibCppBinData/LibCppBinData)
 
 # Define the Windows GUI executable target.
 if(WIN32)
@@ -26,6 +29,10 @@ if(WIN32)
 else()
     add_executable(MidiMessageViewer ${SOURCES})
 endif(WIN32)
+
+# Include all the directories that contain headers that we need that are not
+# in the current directory, otherwise the compiler won't find them
+target_include_directories(MidiMessageViewer PUBLIC ${INCLUDES})
 
 # Links the executable with the libraries. 
 target_link_libraries(MidiMessageViewer ${LIBRARIES})
