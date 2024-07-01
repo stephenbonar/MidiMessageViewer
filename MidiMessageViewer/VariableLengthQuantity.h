@@ -1,4 +1,4 @@
-// MidiFile.h - Declares the MidiFile class.
+// VariableLengthQuantity.h - Declares the VariableLengthQuantity class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,31 +14,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MIDI_FILE_H
-#define MIDI_FILE_H
+#ifndef VARIABLE_LENGTH_QUANTITY_H
+#define VARIABLE_LENGTH_QUANTITY_H
 
-#include <string>
 #include <vector>
 #include "BinData.h"
-#include "MidiHeaderData.h"
-#include "MidiTrack.h"
 
-class MidiFile : public BinData::RawFile
+class VariableLengthQuantity
 {
 public:
-    MidiFile(std::string fileName) : 
-        BinData::RawFile{ fileName }, fileHeader{ BinData::Endianness::Big } 
-    { }
+    VariableLengthQuantity() { }
 
-    BinData::ChunkHeader Header() { return fileHeader; }
+    size_t Length() { return bytes.size(); }
 
-    MidiHeaderData HeaderData() { return headerData; }
+    int Value();
 
-    void Load();
+    void Load(BinData::FileStream* s);
 private:
-    BinData::ChunkHeader fileHeader;
-    MidiHeaderData headerData;
-    std::vector<MidiTrack> tracks;
+    std::vector<BinData::UInt8Field> bytes;
 };
 
 #endif

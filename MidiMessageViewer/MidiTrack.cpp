@@ -1,4 +1,4 @@
-// MidiFile.h - Declares the MidiFile class.
+// MidiTrack.cpp - Defines the MidiTrack class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,31 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MIDI_FILE_H
-#define MIDI_FILE_H
-
-#include <string>
-#include <vector>
-#include "BinData.h"
-#include "MidiHeaderData.h"
 #include "MidiTrack.h"
 
-class MidiFile : public BinData::RawFile
+void MidiTrack::Load(BinData::FileStream* s)
 {
-public:
-    MidiFile(std::string fileName) : 
-        BinData::RawFile{ fileName }, fileHeader{ BinData::Endianness::Big } 
-    { }
-
-    BinData::ChunkHeader Header() { return fileHeader; }
-
-    MidiHeaderData HeaderData() { return headerData; }
-
-    void Load();
-private:
-    BinData::ChunkHeader fileHeader;
-    MidiHeaderData headerData;
-    std::vector<MidiTrack> tracks;
-};
-
-#endif
+    // Test code; only loads the first event. Replace this eventually.
+    MidiEvent firstEvent;
+    firstEvent.Load(s);
+    events.push_back(firstEvent);
+}

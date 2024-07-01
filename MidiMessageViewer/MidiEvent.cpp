@@ -1,4 +1,4 @@
-// MidiFile.h - Defines the MidiFile class.
+// MidiEvent.h - Defines the MidiEvent class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,12 +14,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MidiFile.h"
+#include "MidiEvent.h"
 
-void MidiFile::Load()
+void MidiEvent::Load(BinData::FileStream* s)
 {
-    Open();
-
-    Read(&fileHeader);
-    Read(&headerData);
+    deltaTime.Load(s);
+    s->Read(&statusCode);
 }

@@ -48,8 +48,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
     messageListView = new wxListView{ this, wxID_ANY, 
                                    wxDefaultPosition, wxSize{600, 400} };
     messageListView->AppendColumn("Delta Time", wxLIST_FORMAT_LEFT, 300);
-    messageListView->AppendColumn("Event");
-    messageListView->AppendColumn("Length");
+    messageListView->AppendColumn("Status Code");
     messageListView->AppendColumn("Channel");
     messageListView->AppendColumn("Data");
 
@@ -88,7 +87,7 @@ void MainWindow::OnOpen(wxCommandEvent& event)
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (dialog.ShowModal() == wxID_OK)
     {
-        MidiFile file{ dialog.GetFilename().ToStdString() };
+        MidiFile file{ dialog.GetPath().ToStdString() };
         file.Load();
         std::stringstream status;
         status << "Chunk Header: " << file.Header().ID()->ToString() 
