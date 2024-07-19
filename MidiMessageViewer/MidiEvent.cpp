@@ -16,8 +16,43 @@
 
 #include "MidiEvent.h"
 
-void MidiEvent::Load(BinData::FileStream* s)
+size_t MidiEvent::Size()
 {
-    deltaTime.Load(s);
+    size_t size{ deltaTime.Size() + 1 };
+    
+    if (data != nullptr)
+        size += data->Size();
+
+    return size;
+}
+
+void MidiEvent::DecodeSelf(BinData::FileStream* s)
+{
+    deltaTime.Decode(s);
+    bytesDecoded += deltaTime.Size();
+
     s->Read(&statusCode);
+    bytesDecoded += 1;
+
+    switch (statusCode.Value() >> StatusCodeTypeBitShift)
+    {
+        case EventSystemMessage:
+            eventType = EventType::SystemMessage;
+            dataText << "System ";
+            DecodeSystemMessage(s);
+            break;
+        default:
+            eventType = EventType::Unknown;
+            return;
+    }
+}
+
+void MidiEvent::DecodeSystemMessage(BinData::FileStream* s)
+{
+    switch (statusCode.Value() & StatusCodeDataMask)
+    {
+        case SystemMessageReset:
+            dataText << "Meta Event ";
+            
+    }
 }

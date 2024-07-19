@@ -19,18 +19,34 @@
 
 #include <vector>
 #include "BinData.h"
+#include "MidiDataDecoder.h"
 
-class VariableLengthQuantity
+class VariableLengthQuantity : public MidiDataDecoder
 {
 public:
-    VariableLengthQuantity() { }
+    VariableLengthQuantity() : hasDecoded{ false } { }
 
-    size_t Length() { return bytes.size(); }
+    virtual size_t Size() override { return bytes.size(); }
 
-    int Value();
+    virtual bool HasDecoded() override { return hasDecoded; }
 
-    void Load(BinData::FileStream* s);
+    virtual std::string ToString() override;
+protected:
+    virtual bool HasSubDecoders() override { return false; }
+
+    virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() override 
+    {
+        return nullptr;
+    };
+
+    virtual size_t BytesDecoded() override 
+    { 
+        return hasDecoded ? bytes.size() : 0; 
+    }
+
+    virtual void DecodeSelf(BinData::FileStream* s) override;
 private:
+    bool hasDecoded;
     std::vector<BinData::UInt8Field> bytes;
 };
 

@@ -16,7 +16,7 @@
 
 #include "VariableLengthQuantity.h"
 
-void VariableLengthQuantity::Load(BinData::FileStream* s)
+void VariableLengthQuantity::DecodeSelf(BinData::FileStream* s)
 {
     BinData::UInt8Field nextByte{ 0, BinData::Endianness::Big };
     bytes.clear();
@@ -26,10 +26,12 @@ void VariableLengthQuantity::Load(BinData::FileStream* s)
         s->Read(&nextByte);
         bytes.push_back(nextByte);
     } 
-    while (nextByte.Value() & 0x80 == 0x80);
+    while ((nextByte.Value() & 0x80) == 0x80);
+
+    hasDecoded = true;
 }
 
-int VariableLengthQuantity::Value()
+std::string VariableLengthQuantity::ToString()
 {
     // We will need to shift the value of each byte to the left by multiples of
     // 7 bits because only the last 7 bits of the byte represent the value.
@@ -49,5 +51,5 @@ int VariableLengthQuantity::Value()
         numberOfShifts--;
     }
 
-    return value;
+    return std::to_string(value);
 }

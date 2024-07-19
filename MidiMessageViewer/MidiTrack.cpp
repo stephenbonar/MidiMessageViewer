@@ -16,10 +16,50 @@
 
 #include "MidiTrack.h"
 
-void MidiTrack::Load(BinData::FileStream* s)
+bool MidiTrack::HasSubDecoders()
 {
-    // Test code; only loads the first event. Replace this eventually.
-    MidiEvent firstEvent;
-    firstEvent.Load(s);
-    events.push_back(firstEvent);
+    if (BytesDecoded() < Size())
+    {
+        if (events.size() > 0)
+        {
+            if (events.back()->Type() == MidiEvent::EventType::Unknown)
+                return false;
+            else
+                return true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+std::shared_ptr<MidiDataDecoder> MidiTrack::NextSubDecoder()
+{
+    auto nextEvent = std::make_shared<MidiEvent>();
+    events.push_back(nextEvent);
+    return nextEvent;
+}
+
+size_t MidiTrack::BytesDecoded()
+{
+    size_t bytesDecoded = 0;
+
+    for (std::shared_ptr<MidiEvent> event : events)
+        bytesDecoded += event->Size();
+
+    return bytesDecoded;
+}
+
+void MidiTrack::DecodeSelf(BinData::FileStream* s)
+{
+    if (events.back()->Type() != MidiEvent::EventType::Unknown)
+    {
+        if (BytesDecoded() == Size())
+            hasDecoded = true;
+    }
 }

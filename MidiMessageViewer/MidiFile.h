@@ -19,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "BinData.h"
 #include "MidiHeaderData.h"
 #include "MidiTrack.h"
@@ -35,6 +36,8 @@ public:
     MidiHeaderData HeaderData() { return headerData; }
 
     void Load();
+
+    std::vector<MidiTrack> Tracks() { return tracks; }
 private:
     BinData::ChunkHeader fileHeader;
     MidiHeaderData headerData;

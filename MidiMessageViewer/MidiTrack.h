@@ -18,20 +18,37 @@
 #define MIDI_TRACK_H
 
 #include <vector>
+#include <memory>
+#include "MidiDataDecoder.h"
 #include "MidiEvent.h"
 #include "BinData.h"
 
-class MidiTrack
+class MidiTrack : public MidiDataDecoder
 {
 public:
-    MidiTrack(BinData::ChunkHeader trackHeader) 
-        : trackHeader{ trackHeader } 
+    MidiTrack(std::shared_ptr<BinData::ChunkHeader> trackHeader) 
+        : hasDecoded{ false }, trackHeader{ trackHeader } 
     { }
 
-    void Load(BinData::FileStream* s);
+    virtual bool HasDecoded() override { return hasDecoded; }
+
+    virtual size_t Size() override { return trackHeader->Size()->Value(); }
+
+    virtual std::string ToString() override { return "Track"; }
+
+    std::vector<std::shared_ptr<MidiEvent>> Events() { return events; }
+protected:
+    virtual bool HasSubDecoders() override;
+
+    virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() override;
+
+    virtual size_t BytesDecoded() override;
+
+    virtual void DecodeSelf(BinData::FileStream* s) override;
 private:
-    BinData::ChunkHeader trackHeader;
-    std::vector<MidiEvent> events;
+    bool hasDecoded;
+    std::shared_ptr<BinData::ChunkHeader> trackHeader;
+    std::vector<std::shared_ptr<MidiEvent>> events;
 };
 
 #endif

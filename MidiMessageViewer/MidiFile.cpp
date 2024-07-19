@@ -22,4 +22,12 @@ void MidiFile::Load()
 
     Read(&fileHeader);
     Read(&headerData);
+    std::shared_ptr<BinData::ChunkHeader> mtrkHeader = FindChunkHeader("MTrk");
+
+    if (mtrkHeader != nullptr)
+    {
+        MidiTrack firstTrack{ mtrkHeader };
+        firstTrack.Decode(mStream.get());
+        tracks.push_back(firstTrack);
+    }
 }

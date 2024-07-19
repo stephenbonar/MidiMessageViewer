@@ -49,7 +49,6 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
                                    wxDefaultPosition, wxSize{600, 400} };
     messageListView->AppendColumn("Delta Time", wxLIST_FORMAT_LEFT, 300);
     messageListView->AppendColumn("Status Code");
-    messageListView->AppendColumn("Channel");
     messageListView->AppendColumn("Data");
 
     SetMenuBar(menuBar);
@@ -85,10 +84,12 @@ void MainWindow::OnOpen(wxCommandEvent& event)
      wxFileDialog dialog(this, _("Open MIDI file"), "", "",
                         "Media files (*.mid)|*.mid", 
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
     if (dialog.ShowModal() == wxID_OK)
     {
         MidiFile file{ dialog.GetPath().ToStdString() };
         file.Load();
+
         std::stringstream status;
         status << "Chunk Header: " << file.Header().ID()->ToString() 
                << ", Chunk Size: " << file.Header().Size()->Value()
@@ -96,5 +97,18 @@ void MainWindow::OnOpen(wxCommandEvent& event)
                << ", Num Tracks: " << file.HeaderData().NumTracks()->Value()
                << ", Division: " << file.HeaderData().NumTracks()->Value();
         SetStatusText(wxString{ status.str() });
+
+        for (auto track : file.Tracks())
+        {
+            int index = 0;
+
+            for (auto event : track.Events())
+            {
+                messageListView->InsertItem(index, event->DeltaTime());
+                messageListView->SetItem(index, 1, event->StatusCode());
+                messageListView->SetItem(index, 2, event->Data());
+                index++;
+            }
+        }
     }
 }

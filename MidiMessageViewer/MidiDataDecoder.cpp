@@ -1,4 +1,4 @@
-// MainWindow.h - Declares the MainWindow class.
+// MidiDataDecoder.cpp - Defines the MidiDataDecoder class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,28 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#include "MidiDataDecoder.h"
 
-#include <sstream>
-#include <wx/wx.h>
-#include <wx/listctrl.h>
-#include <wx/combobox.h>
-#include "BinData.h"
-#include "MidiFile.h"
-#include "MidiTrack.h"
-
-class MainWindow : public wxFrame
+void MidiDataDecoder::Decode(BinData::FileStream* s)
 {
-public:
-    MainWindow();
-private:
-    wxComboBox* trackComboBox;
-    wxListView* messageListView;
+    while (HasSubDecoders())
+    {
+        std::shared_ptr<MidiDataDecoder> next = NextSubDecoder();
+        next->Decode(s);
+    }
 
-    void OnOpen(wxCommandEvent& event);
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-};
-
-#endif
+    DecodeSelf(s);
+}

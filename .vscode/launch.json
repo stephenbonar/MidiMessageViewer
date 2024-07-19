@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(lldb) macOS Launch App",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/MidiMessageViewer/MidiMessageViewer",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
             "name": "(Windows) Launch App",
             "type": "cppvsdbg",
             "request": "launch",
