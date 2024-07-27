@@ -43,7 +43,7 @@ void MidiEvent::DecodeSelf(BinData::FileStream* s)
             break;
         default:
             eventType = EventType::Unknown;
-            return;
+            dataText << "Unknown Event Type";
     }
 }
 
@@ -53,6 +53,41 @@ void MidiEvent::DecodeSystemMessage(BinData::FileStream* s)
     {
         case SystemMessageReset:
             dataText << "Meta Event ";
-            
+            DecodeMetaEvent(s);
+            break;
+        default:
+            dataText << "Unknown Type";
+            eventType = EventType::Unknown;
+    }
+}
+
+void MidiEvent::DecodeMetaEvent(BinData::FileStream* s)
+{
+    BinData::UInt8Field opcode;
+    BinData::UInt8Field tempoPrefix;
+    BinData::UInt24Field tempo;
+
+    s->Read(&opcode);
+
+    switch (opcode.Value())
+    {
+        case MetaEventTempo:
+            s->Read(&tempoPrefix);
+
+            if (tempoPrefix.Value() != MetaEventTempoPrefix)
+            {
+                dataText << "Invalid Tempo Change";
+                eventType = EventType::Unknown;
+                return;
+            }
+
+            s->Read(&tempo);
+            dataText << "Tempo " << tempo.ToString() 
+                     << " microseconds per quarter note";
+
+            break;
+        default:
+            dataText << "Unknown Type";
+            eventType = EventType::Unknown;
     }
 }

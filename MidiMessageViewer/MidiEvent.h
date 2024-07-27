@@ -50,6 +50,9 @@ public:
     inline static constexpr int SystemMessageActiveSensing{ 0xE };
     inline static constexpr int SystemMessageReset{ 0xF };
 
+    inline static constexpr int MetaEventTempo{ 0x51 };
+    inline static constexpr int MetaEventTempoPrefix{ 0x3 };
+
     enum class EventType
     {
         Unknown,
@@ -108,6 +111,8 @@ private:
     std::stringstream dataText;
 
     void DecodeSystemMessage(BinData::FileStream* s);
+
+    void DecodeMetaEvent(BinData::FileStream* s);
 };
 
 #endif
