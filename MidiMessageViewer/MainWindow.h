@@ -18,6 +18,7 @@
 #define MAIN_WINDOW_H
 
 #include <sstream>
+#include <memory>
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <wx/combobox.h>
@@ -32,10 +33,12 @@ public:
 private:
     wxComboBox* trackComboBox;
     wxListView* messageListView;
+    std::unique_ptr<MidiFile> currentFile;
 
     void OnOpen(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    void OnTrackSelect(wxCommandEvent& event);
 };
 
 #endif

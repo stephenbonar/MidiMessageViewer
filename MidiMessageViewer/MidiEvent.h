@@ -52,6 +52,8 @@ public:
 
     inline static constexpr int MetaEventTempo{ 0x51 };
     inline static constexpr int MetaEventTempoPrefix{ 0x3 };
+    inline static constexpr int MetaEventEndOfTrack{ 0x2F };
+    inline static constexpr int MetaEventEndOfTrackSuffix{ 0x0 };
 
     enum class EventType
     {
@@ -63,7 +65,8 @@ public:
         ProgramChange,
         ChannelPressure,
         PitchWheelChange,
-        SystemMessage
+        SystemMessage,
+        EndOfTrack
     };
 
     MidiEvent() : hasDecoded{ false },
@@ -81,12 +84,11 @@ public:
 
     std::string DeltaTime() { return deltaTime.ToString(); }
 
-    std::string StatusCode() 
-    { 
-        return statusCode.ToString(BinData::Format::Hex); 
-    }
+    std::string DataText() { return dataText.str(); }
 
-    std::string Data() { return dataText.str(); }
+    std::string Details() { return details.str(); }
+
+    std::string TypeText() { return typeText.str(); }
 
     EventType Type() { return eventType; }
 protected:
@@ -109,10 +111,14 @@ private:
     std::unique_ptr<MidiDataDecoder> data;
     EventType eventType;
     std::stringstream dataText;
+    std::stringstream typeText;
+    std::stringstream details;
 
     void DecodeSystemMessage(BinData::FileStream* s);
 
     void DecodeMetaEvent(BinData::FileStream* s);
+
+    void ReadData(BinData::FileStream*s, BinData::Field* f);
 };
 
 #endif

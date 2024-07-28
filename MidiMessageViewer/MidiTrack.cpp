@@ -24,6 +24,8 @@ bool MidiTrack::HasSubDecoders()
         {
             if (events.back()->Type() == MidiEvent::EventType::Unknown)
                 return false;
+            else if (events.back()->Type() == MidiEvent::EventType::EndOfTrack)
+                return false;
             else
                 return true;
         }

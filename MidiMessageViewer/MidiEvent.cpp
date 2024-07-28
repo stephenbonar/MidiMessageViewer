@@ -31,19 +31,23 @@ void MidiEvent::DecodeSelf(BinData::FileStream* s)
     deltaTime.Decode(s);
     bytesDecoded += deltaTime.Size();
 
+    ReadData(s, &statusCode);
+
+    /*
     s->Read(&statusCode);
-    bytesDecoded += 1;
+    dataText << statusCode.ToString(BinData::Format::Hex) << " ";
+    bytesDecoded += 1;*/
 
     switch (statusCode.Value() >> StatusCodeTypeBitShift)
     {
         case EventSystemMessage:
             eventType = EventType::SystemMessage;
-            dataText << "System ";
+            typeText << "System ";
             DecodeSystemMessage(s);
             break;
         default:
             eventType = EventType::Unknown;
-            dataText << "Unknown Event Type";
+            typeText << "Unknown Event Type";
     }
 }
 
@@ -52,11 +56,11 @@ void MidiEvent::DecodeSystemMessage(BinData::FileStream* s)
     switch (statusCode.Value() & StatusCodeDataMask)
     {
         case SystemMessageReset:
-            dataText << "Meta Event ";
+            typeText << "Meta Event ";
             DecodeMetaEvent(s);
             break;
         default:
-            dataText << "Unknown Type";
+            typeText << "Unknown Type";
             eventType = EventType::Unknown;
     }
 }
@@ -64,30 +68,51 @@ void MidiEvent::DecodeSystemMessage(BinData::FileStream* s)
 void MidiEvent::DecodeMetaEvent(BinData::FileStream* s)
 {
     BinData::UInt8Field opcode;
-    BinData::UInt8Field tempoPrefix;
+    BinData::UInt8Field param;
     BinData::UInt24Field tempo;
-
-    s->Read(&opcode);
+    //s->Read(&opcode);
+    ReadData(s, &opcode);
 
     switch (opcode.Value())
     {
         case MetaEventTempo:
-            s->Read(&tempoPrefix);
+            ReadData(s, &param);
+            //s->Read(&param);
 
-            if (tempoPrefix.Value() != MetaEventTempoPrefix)
+            if (param.Value() != MetaEventTempoPrefix)
             {
-                dataText << "Invalid Tempo Change";
+                details << "Invalid Tempo Change";
                 eventType = EventType::Unknown;
                 return;
             }
 
             s->Read(&tempo);
-            dataText << "Tempo " << tempo.ToString() 
+            details << "Tempo " << tempo.ToString() 
                      << " microseconds per quarter note";
+            break;
+        case MetaEventEndOfTrack:
+            ReadData(s, &param);
+            //s->Read(&param);
 
+            if (param.Value() != MetaEventEndOfTrackSuffix)
+            {
+                details << "Invalid End of Track";
+                eventType = EventType::Unknown;
+                return;
+            }
+
+            details << "End of Track";
+            eventType = EventType::EndOfTrack;
             break;
         default:
-            dataText << "Unknown Type";
+            details << "Unknown Type";
             eventType = EventType::Unknown;
     }
+}
+
+void MidiEvent::ReadData(BinData::FileStream* s, BinData::Field* f)
+{
+    s->Read(f);
+    dataText << f->ToString(BinData::Format::Hex) << " ";
+    bytesDecoded += 1;
 }

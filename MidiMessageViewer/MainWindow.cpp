@@ -18,7 +18,8 @@
 
 enum ID
 {
-    Open = 1
+    Open = 1,
+    TrackSelect = 2
 };
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
@@ -43,19 +44,22 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
     menuBar->Append(fileMenu, "&File");
     menuBar->Append(helpMenu, "&Help");
 
-    trackComboBox = new wxComboBox{ topPanel, wxID_ANY, "Track" };
+    wxStaticText *trackLabel = new wxStaticText{ topPanel, wxID_ANY, "Track" };
+    trackComboBox = new wxComboBox{ topPanel, ID::TrackSelect, "-" };
 
     messageListView = new wxListView{ this, wxID_ANY, 
                                    wxDefaultPosition, wxSize{600, 400} };
     messageListView->AppendColumn("Delta Time", wxLIST_FORMAT_LEFT, 300);
-    messageListView->AppendColumn("Status Code");
     messageListView->AppendColumn("Data");
+    messageListView->AppendColumn("Type");
+    messageListView->AppendColumn("Details");
 
     SetMenuBar(menuBar);
  
     CreateStatusBar();
     SetStatusText("Ready");
 
+    topSizer->Add(trackLabel);
     topSizer->Add(trackComboBox, 0, wxALL, 5);
     topPanel->SetSizerAndFit(topSizer);
 
@@ -66,6 +70,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
     Bind(wxEVT_MENU, &MainWindow::OnOpen, this, ID::Open);
     Bind(wxEVT_MENU, &MainWindow::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MainWindow::OnExit, this, wxID_EXIT);
+    Bind(wxEVT_COMBOBOX, &MainWindow::OnTrackSelect, this, ID::TrackSelect);
 }
 
 void MainWindow::OnExit(wxCommandEvent& event)
@@ -87,28 +92,53 @@ void MainWindow::OnOpen(wxCommandEvent& event)
 
     if (dialog.ShowModal() == wxID_OK)
     {
-        MidiFile file{ dialog.GetPath().ToStdString() };
-        file.Load();
+        currentFile = std::make_unique<MidiFile>(dialog.GetPath().ToStdString());
+        currentFile->Load();
 
         std::stringstream status;
-        status << "Chunk Header: " << file.Header().ID()->ToString() 
-               << ", Chunk Size: " << file.Header().Size()->Value()
-               << ", Format: " << file.HeaderData().Format()->Value()
-               << ", Num Tracks: " << file.HeaderData().NumTracks()->Value()
-               << ", Division: " << file.HeaderData().NumTracks()->Value();
+        status << "Chunk Header: " << currentFile->Header().ID()->ToString() 
+               << ", Chunk Size: " << currentFile->Header().Size()->Value()
+               << ", Format: " << currentFile->HeaderData().Format()->Value()
+               << ", Num Tracks: " << currentFile->HeaderData().NumTracks()->Value()
+               << ", Division: " << currentFile->HeaderData().NumTracks()->Value();
         SetStatusText(wxString{ status.str() });
 
-        for (auto track : file.Tracks())
+        int trackNumber{ 0 };
+
+        for (auto track : currentFile->Tracks())
         {
-            int index = 0;
+            trackComboBox->AppendString(std::to_string(trackNumber));
+            trackNumber++;
+        }
+    }
+}
+
+void MainWindow::OnTrackSelect(wxCommandEvent& event)
+{
+    wxMessageBox("Track selected" + trackComboBox->GetValue(),
+                 "MidiMessageViewer", wxOK | wxICON_INFORMATION);
+
+    int trackNumber{ 0 };
+    int selectedTrack{ 0 };
+    trackComboBox->GetValue().ToInt(&selectedTrack);
+
+    for (auto track : currentFile->Tracks())
+    {
+        if (trackNumber == selectedTrack)
+        {
+            int index{ 0 };
+            messageListView->DeleteAllItems();
 
             for (auto event : track.Events())
             {
                 messageListView->InsertItem(index, event->DeltaTime());
-                messageListView->SetItem(index, 1, event->StatusCode());
-                messageListView->SetItem(index, 2, event->Data());
+                messageListView->SetItem(index, 1, event->DataText());
+                messageListView->SetItem(index, 2, event->TypeText());
+                messageListView->SetItem(index, 3, event->Details());
                 index++;
             }
         }
+
+        trackNumber++;
     }
 }
