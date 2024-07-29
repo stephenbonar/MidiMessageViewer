@@ -22,9 +22,9 @@ bool MidiTrack::HasSubDecoders()
     {
         if (events.size() > 0)
         {
-            if (events.back()->Type() == MidiEvent::EventType::Unknown)
+            if (events.back()->Type() == MidiEventType::Unknown)
                 return false;
-            else if (events.back()->Type() == MidiEvent::EventType::EndOfTrack)
+            else if (events.back()->Type() == MidiEventType::EndOfTrackEvent)
                 return false;
             else
                 return true;
@@ -42,7 +42,7 @@ bool MidiTrack::HasSubDecoders()
 
 std::shared_ptr<MidiDataDecoder> MidiTrack::NextSubDecoder()
 {
-    auto nextEvent = std::make_shared<MidiEvent>();
+    auto nextEvent = std::make_shared<MidiTrackEvent>();
     events.push_back(nextEvent);
     return nextEvent;
 }
@@ -51,7 +51,7 @@ size_t MidiTrack::BytesDecoded()
 {
     size_t bytesDecoded = 0;
 
-    for (std::shared_ptr<MidiEvent> event : events)
+    for (std::shared_ptr<MidiTrackEvent> event : events)
         bytesDecoded += event->Size();
 
     return bytesDecoded;
@@ -59,7 +59,7 @@ size_t MidiTrack::BytesDecoded()
 
 void MidiTrack::DecodeSelf(BinData::FileStream* s)
 {
-    if (events.back()->Type() != MidiEvent::EventType::Unknown)
+    if (events.back()->Type() != MidiEventType::Unknown)
     {
         if (BytesDecoded() == Size())
             hasDecoded = true;

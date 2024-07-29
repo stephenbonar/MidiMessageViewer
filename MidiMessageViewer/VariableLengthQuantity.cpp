@@ -31,7 +31,7 @@ void VariableLengthQuantity::DecodeSelf(BinData::FileStream* s)
     hasDecoded = true;
 }
 
-std::string VariableLengthQuantity::ToString()
+int VariableLengthQuantity::Value()
 {
     // We will need to shift the value of each byte to the left by multiples of
     // 7 bits because only the last 7 bits of the byte represent the value.
@@ -51,5 +51,15 @@ std::string VariableLengthQuantity::ToString()
         numberOfShifts--;
     }
 
-    return std::to_string(value);
+    return value;
+}
+
+std::string VariableLengthQuantity::ToString()
+{
+    std::stringstream byteString;
+
+    for (BinData::UInt8Field byte : bytes)
+        byteString << byte.ToString(BinData::Format::Hex) << " ";
+    
+    return byteString.str();
 }

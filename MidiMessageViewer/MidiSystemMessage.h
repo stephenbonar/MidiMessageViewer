@@ -1,4 +1,4 @@
-// MidiEvent.h - Declares the MidiEvent class.
+// MidiSystemMessage.h - Declares the MidiSystemMessage class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,24 +14,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MIDI_EVENT_H
-#define MIDI_EVENT_H
+#ifndef MIDI_SYSTEM_MESSAGE_H
+#define MIDI_SYSTEM_MESSAGE_H
 
-#include <memory>
-#include <string>
+#include "MidiMessage.h"
+#include "MidiConstants.h"
+#include "MidiMetaEvent.h"
 #include "StatusByte.h"
-#include "MidiEventDecoder.h"
-#include "MidiControlChangeMessage.h"
-#include "MidiProgramChangeMessage.h"
-#include "MidiSystemMessage.h"
+#include "BinData.h"
 
-class MidiEvent : public MidiEventDecoder
+class MidiSystemMessage : public MidiMessage
 {
+public:
+    MidiSystemMessage(StatusByte statusByte) : MidiMessage(statusByte)
+    { }
 protected:
-    static StatusByte lastStatusByte;
-
-    StatusByte statusByte;
-    
     virtual void DecodeSelf(BinData::FileStream* s) override;
 };
 

@@ -20,7 +20,9 @@
 #include <vector>
 #include <memory>
 #include "MidiDataDecoder.h"
-#include "MidiEvent.h"
+#include "MidiTrackEvent.h"
+#include "MidiEventType.h"
+#include "StatusByte.h"
 #include "BinData.h"
 
 class MidiTrack : public MidiDataDecoder
@@ -36,7 +38,7 @@ public:
 
     virtual std::string ToString() override { return "Track"; }
 
-    std::vector<std::shared_ptr<MidiEvent>> Events() { return events; }
+    std::vector<std::shared_ptr<MidiTrackEvent>> Events() { return events; }
 protected:
     virtual bool HasSubDecoders() override;
 
@@ -48,7 +50,7 @@ protected:
 private:
     bool hasDecoded;
     std::shared_ptr<BinData::ChunkHeader> trackHeader;
-    std::vector<std::shared_ptr<MidiEvent>> events;
+    std::vector<std::shared_ptr<MidiTrackEvent>> events;
 };
 
 #endif

@@ -18,6 +18,7 @@
 #define VARIABLE_LENGTH_QUANTITY_H
 
 #include <vector>
+#include <sstream>
 #include "BinData.h"
 #include "MidiDataDecoder.h"
 
@@ -31,6 +32,8 @@ public:
     virtual bool HasDecoded() override { return hasDecoded; }
 
     virtual std::string ToString() override;
+
+    int Value();
 protected:
     virtual bool HasSubDecoders() override { return false; }
 

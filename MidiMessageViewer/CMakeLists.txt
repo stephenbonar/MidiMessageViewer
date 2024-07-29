@@ -15,14 +15,26 @@
 # limitations under the License.
 
 # Define the sources used to build the executable.
-set(SOURCES 
+set(SOURCES
+    MainWindow.cpp
+    MidiChannelMessage.cpp
+    MidiControlChangeMessage.cpp
+    MidiDataDecoder.cpp
+    MidiEndOfTrackEvent.cpp
+    MidiEvent.cpp
+    MidiEventDecoder.cpp
+    MidiFile.cpp
+    MidiMessage.cpp
     MidiMessageViewer.cpp 
-    MainWindow.cpp 
-    MidiFile.cpp 
+    MidiMetaEvent.cpp
+    MidiProgramChangeMessage.cpp
+    MidiSystemMessage.cpp
+    MidiTempoChangeEvent.cpp
     MidiTrack.cpp 
-    MidiEvent.cpp 
+    MidiTrackEvent.cpp
+    StatusByte.cpp
     VariableLengthQuantity.cpp 
-    MidiDataDecoder.cpp)
+    )
 
 # Define the additional libraries the GUI needs to link with. 
 set(LIBRARIES LibCppBinData wx::net wx::core wx::base)

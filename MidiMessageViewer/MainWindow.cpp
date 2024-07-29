@@ -49,8 +49,8 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
 
     messageListView = new wxListView{ this, wxID_ANY, 
                                    wxDefaultPosition, wxSize{600, 400} };
-    messageListView->AppendColumn("Delta Time", wxLIST_FORMAT_LEFT, 300);
-    messageListView->AppendColumn("Data");
+    messageListView->AppendColumn("Track Event Data", wxLIST_FORMAT_LEFT, 300);
+    messageListView->AppendColumn("Delta Time");
     messageListView->AppendColumn("Type");
     messageListView->AppendColumn("Details");
 
@@ -115,9 +115,6 @@ void MainWindow::OnOpen(wxCommandEvent& event)
 
 void MainWindow::OnTrackSelect(wxCommandEvent& event)
 {
-    wxMessageBox("Track selected" + trackComboBox->GetValue(),
-                 "MidiMessageViewer", wxOK | wxICON_INFORMATION);
-
     int trackNumber{ 0 };
     int selectedTrack{ 0 };
     trackComboBox->GetValue().ToInt(&selectedTrack);
@@ -131,8 +128,8 @@ void MainWindow::OnTrackSelect(wxCommandEvent& event)
 
             for (auto event : track.Events())
             {
-                messageListView->InsertItem(index, event->DeltaTime());
-                messageListView->SetItem(index, 1, event->DataText());
+                messageListView->InsertItem(index, event->ToString());
+                messageListView->SetItem(index, 1, event->DeltaTime());
                 messageListView->SetItem(index, 2, event->TypeText());
                 messageListView->SetItem(index, 3, event->Details());
                 index++;

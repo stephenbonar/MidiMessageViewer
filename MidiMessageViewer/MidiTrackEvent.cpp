@@ -1,4 +1,4 @@
-// MidiEvent.h - Declares the MidiEvent class.
+// MidiTrackEvent.h - Defines the MidiTrackEvent class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,25 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MIDI_EVENT_H
-#define MIDI_EVENT_H
+#include "MidiTrackEvent.h"
 
-#include <memory>
-#include <string>
-#include "StatusByte.h"
-#include "MidiEventDecoder.h"
-#include "MidiControlChangeMessage.h"
-#include "MidiProgramChangeMessage.h"
-#include "MidiSystemMessage.h"
-
-class MidiEvent : public MidiEventDecoder
+void MidiTrackEvent::DecodeSelf(BinData::FileStream* s)
 {
-protected:
-    static StatusByte lastStatusByte;
+    deltaTime.Decode(s);
+    bytesDecoded += deltaTime.Size();
+    dataText = deltaTime.ToString();
 
-    StatusByte statusByte;
-    
-    virtual void DecodeSelf(BinData::FileStream* s) override;
-};
+    subDecoder = std::make_unique<MidiEvent>();
 
-#endif
+    MidiEventDecoder::DecodeSelf(s);
+}

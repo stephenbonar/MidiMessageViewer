@@ -48,6 +48,18 @@ public:
     /// @return The string representing the decoded data.
     virtual std::string ToString() = 0;
 
+    /*
+    /// @brief Provides a string representation of the decoded data.
+    /// @return The string representing the decoded data.
+    virtual std::string ToString() = 0;
+
+    virtual std::string Details() = 0;
+
+    virtual std::string TypeText() = 0;
+
+    virtual MidiDataType Type() = 0;
+    */
+
     /// @brief Decodes the data at the current position in the file stream.
     ///
     /// The default implementation of this method calls NextSubDecoder() 

@@ -1,4 +1,4 @@
-// MidiEvent.h - Defines the MidiEvent class.
+// MidiEvent.cpp - Defines the MidiEvent class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -16,103 +16,44 @@
 
 #include "MidiEvent.h"
 
-size_t MidiEvent::Size()
-{
-    size_t size{ deltaTime.Size() + 1 };
-    
-    if (data != nullptr)
-        size += data->Size();
-
-    return size;
-}
+StatusByte MidiEvent::lastStatusByte{ };
 
 void MidiEvent::DecodeSelf(BinData::FileStream* s)
 {
-    deltaTime.Decode(s);
-    bytesDecoded += deltaTime.Size();
+    s->Read(statusByte.Value().get());
+    bytesDecoded++;
+    typeText = "Event";
 
-    ReadData(s, &statusCode);
-
-    /*
-    s->Read(&statusCode);
-    dataText << statusCode.ToString(BinData::Format::Hex) << " ";
-    bytesDecoded += 1;*/
-
-    switch (statusCode.Value() >> StatusCodeTypeBitShift)
+    if (!statusByte.IsValid())
     {
-        case EventSystemMessage:
-            eventType = EventType::SystemMessage;
-            typeText << "System ";
-            DecodeSystemMessage(s);
+        statusByte = MidiEvent::lastStatusByte;
+        statusByte.SetIsRunning(true);
+        typeText = "(Running)";
+
+        // Go back one because we just consumed a data byte instead of a status
+        // byte. The next decoder will need to consume this same byte.
+        s->SetOffset(s->Offset() - 1);
+    }
+    else
+    {
+        dataText = statusByte.Value()->ToString(BinData::Format::Hex);
+        MidiEvent::lastStatusByte = statusByte;
+    }
+
+    switch (statusByte.EventType())
+    {
+        case MidiEventType::ControlChangeMessage:
+            subDecoder = std::make_unique<MidiControlChangeMessage>(statusByte);
+            break;
+        case MidiEventType::ProgramChangeMessage:
+            subDecoder = std::make_unique<MidiProgramChangeMessage>(statusByte);
+            break;
+        case MidiEventType::SystemMessage:
+            subDecoder = std::make_unique<MidiSystemMessage>(statusByte);
             break;
         default:
-            eventType = EventType::Unknown;
-            typeText << "Unknown Event Type";
+            typeText += " unknown";
     }
-}
 
-void MidiEvent::DecodeSystemMessage(BinData::FileStream* s)
-{
-    switch (statusCode.Value() & StatusCodeDataMask)
-    {
-        case SystemMessageReset:
-            typeText << "Meta Event ";
-            DecodeMetaEvent(s);
-            break;
-        default:
-            typeText << "Unknown Type";
-            eventType = EventType::Unknown;
-    }
-}
-
-void MidiEvent::DecodeMetaEvent(BinData::FileStream* s)
-{
-    BinData::UInt8Field opcode;
-    BinData::UInt8Field param;
-    BinData::UInt24Field tempo;
-    //s->Read(&opcode);
-    ReadData(s, &opcode);
-
-    switch (opcode.Value())
-    {
-        case MetaEventTempo:
-            ReadData(s, &param);
-            //s->Read(&param);
-
-            if (param.Value() != MetaEventTempoPrefix)
-            {
-                details << "Invalid Tempo Change";
-                eventType = EventType::Unknown;
-                return;
-            }
-
-            s->Read(&tempo);
-            details << "Tempo " << tempo.ToString() 
-                     << " microseconds per quarter note";
-            break;
-        case MetaEventEndOfTrack:
-            ReadData(s, &param);
-            //s->Read(&param);
-
-            if (param.Value() != MetaEventEndOfTrackSuffix)
-            {
-                details << "Invalid End of Track";
-                eventType = EventType::Unknown;
-                return;
-            }
-
-            details << "End of Track";
-            eventType = EventType::EndOfTrack;
-            break;
-        default:
-            details << "Unknown Type";
-            eventType = EventType::Unknown;
-    }
-}
-
-void MidiEvent::ReadData(BinData::FileStream* s, BinData::Field* f)
-{
-    s->Read(f);
-    dataText << f->ToString(BinData::Format::Hex) << " ";
-    bytesDecoded += 1;
+    MidiEventDecoder::DecodeSelf(s);
 }
