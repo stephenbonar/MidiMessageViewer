@@ -24,6 +24,10 @@ MidiEventType StatusByte::EventType()
             return MidiEventType::ControlChangeMessage;
         case EventProgramChangeMessage:
             return MidiEventType::ProgramChangeMessage;
+        case EventPitchWheelChangeMessage:
+            return MidiEventType::PitchWheelChangeMessage;
+        case EventNoteOnMessage:
+            return MidiEventType::NoteOnMessage;
         case EventSystemMessage:
             return MidiEventType::SystemMessage;
         default:

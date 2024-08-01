@@ -1,3 +1,4 @@
+
 // MidiMessage.cpp - Defines the MidiMessage class.
 //
 // Copyright (C) 2024 Stephen Bonar
@@ -16,13 +17,18 @@
 
 #include "MidiMessage.h"
 
-void MidiMessage::ReadDataByte(BinData::FileStream* s, 
-                                      std::string detailsLabel)
+BinData::UInt8Field MidiMessage::ReadDataByte(BinData::FileStream* s)
 {
     BinData::UInt8Field byte;
     s->Read(&byte);
-    details += " " + detailsLabel + " " + byte.ToString();
     dataText += byte.ToString(BinData::Format::Hex) + " ";
+    return byte;
+}
+
+void MidiMessage::DecodeDataByte(std::string label, BinData::FileStream* s)
+{
+    BinData::UInt8Field byte = ReadDataByte(s);
+    details += " " + label + " " + byte.ToString();
 }
 
 void MidiMessage::DecodeSelf(BinData::FileStream* s)

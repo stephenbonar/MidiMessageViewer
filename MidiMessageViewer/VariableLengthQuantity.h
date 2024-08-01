@@ -20,6 +20,7 @@
 #include <vector>
 #include <sstream>
 #include "BinData.h"
+#include "MidiConstants.h"
 #include "MidiDataDecoder.h"
 
 class VariableLengthQuantity : public MidiDataDecoder

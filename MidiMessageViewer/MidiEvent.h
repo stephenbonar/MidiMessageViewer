@@ -21,8 +21,10 @@
 #include <string>
 #include "StatusByte.h"
 #include "MidiEventDecoder.h"
+#include "MidiNoteOnMessage.h"
 #include "MidiControlChangeMessage.h"
 #include "MidiProgramChangeMessage.h"
+#include "MidiPitchWheelChangeMessage.h"
 #include "MidiSystemMessage.h"
 
 class MidiEvent : public MidiEventDecoder

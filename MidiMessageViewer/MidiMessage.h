@@ -33,8 +33,9 @@ protected:
     StatusByte statusByte;
     std::string statusDataLabel;
 
-    virtual void ReadDataByte(BinData::FileStream* s, 
-                              std::string label);
+    virtual BinData::UInt8Field ReadDataByte(BinData::FileStream* s);
+
+    virtual void DecodeDataByte(std::string label, BinData::FileStream* s);
 
     virtual void DecodeSelf(BinData::FileStream* s) override;
 };

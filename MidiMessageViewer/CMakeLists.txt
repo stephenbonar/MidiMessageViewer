@@ -18,7 +18,9 @@
 set(SOURCES
     MainWindow.cpp
     MidiChannelMessage.cpp
+    MidiNoteOnMessage.cpp
     MidiControlChangeMessage.cpp
+    MidiPitchWheelChangeMessage.cpp
     MidiDataDecoder.cpp
     MidiEndOfTrackEvent.cpp
     MidiEvent.cpp

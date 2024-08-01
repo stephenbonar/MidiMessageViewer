@@ -21,11 +21,5 @@ void MidiProgramChangeMessage::DecodeSelf(BinData::FileStream* s)
     type = MidiEventType::ProgramChangeMessage;
     typeText = "Program Change";
     MidiChannelMessage::DecodeSelf(s);
-    ReadDataByte(s, "program");
-    /*
-    BinData::UInt8Field programNumber;
-    s->Read(&programNumber);
-    details += " program " + programNumber.ToString();
-    dataText = programNumber.ToString(BinData::Format::Hex);
-    */
+    DecodeDataByte("program", s);
 }

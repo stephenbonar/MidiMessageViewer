@@ -1,4 +1,4 @@
-// MidiControlChangeMessage.cpp - Defines the MidiControlChangeMessage class.
+// MidiNoteOnMessage.h - Defines the MidiNoteOnMessage class.
 //
 // Copyright (C) 2024 Stephen Bonar
 //
@@ -14,13 +14,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MidiControlChangeMessage.h"
+#ifndef MIDI_NOTE_ON_MESSAGE_H
+#define MIDI_NOTE_ON_MESSAGE_H
 
-void MidiControlChangeMessage::DecodeSelf(BinData::FileStream* s)
+#include "MidiChannelMessage.h"
+#include "StatusByte.h"
+
+class MidiNoteOnMessage : public MidiChannelMessage
 {
-    type = MidiEventType::ControlChangeMessage;
-    typeText = "Control Change";
-    MidiChannelMessage::DecodeSelf(s);
-    DecodeDataByte("control number", s);
-    DecodeDataByte("value", s);
-}
+public:
+    MidiNoteOnMessage(StatusByte statusByte) : MidiChannelMessage(statusByte)
+    { }
+
+    virtual void DecodeSelf(BinData::FileStream* s) override;
+};
+
+#endif

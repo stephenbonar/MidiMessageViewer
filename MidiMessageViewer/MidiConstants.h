@@ -17,6 +17,8 @@
 #ifndef MIDI_CONSTANTS_H
 #define MIDI_CONSTANTS_H
 
+inline constexpr int ContinuationBitMask{ 0x80 };
+
 inline constexpr int StatusCodeTypeBitShift{ 4 };
 inline constexpr int StatusCodeDataMask{ 0x0F };
 inline constexpr int StatusCodeValidationMask{ 0x80 };

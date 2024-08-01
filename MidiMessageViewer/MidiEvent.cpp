@@ -36,17 +36,23 @@ void MidiEvent::DecodeSelf(BinData::FileStream* s)
     }
     else
     {
-        dataText = statusByte.Value()->ToString(BinData::Format::Hex);
+        dataText += statusByte.Value()->ToString(BinData::Format::Hex);
         MidiEvent::lastStatusByte = statusByte;
     }
 
     switch (statusByte.EventType())
     {
+        case MidiEventType::NoteOnMessage:
+            subDecoder = std::make_unique<MidiNoteOnMessage>(statusByte);
+            break;
         case MidiEventType::ControlChangeMessage:
             subDecoder = std::make_unique<MidiControlChangeMessage>(statusByte);
             break;
         case MidiEventType::ProgramChangeMessage:
             subDecoder = std::make_unique<MidiProgramChangeMessage>(statusByte);
+            break;
+        case MidiEventType::PitchWheelChangeMessage:
+            subDecoder = std::make_unique<MidiPitchWheelChangeMessage>(statusByte);
             break;
         case MidiEventType::SystemMessage:
             subDecoder = std::make_unique<MidiSystemMessage>(statusByte);
