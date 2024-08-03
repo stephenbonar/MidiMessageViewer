@@ -16,11 +16,11 @@
 
 #include "MidiNoteOnMessage.h"
 
-void MidiNoteOnMessage::DecodeSelf(BinData::FileStream* s)
+void MidiNoteOnMessage::FinishDecoding(BinData::FileStream* s)
 {
     type = MidiEventType::NoteOnMessage;
-    typeText = "Note On";
-    MidiChannelMessage::DecodeSelf(s);
+    typeText += "Note On";
+    //MidiChannelMessage::FinishDecoding(s);
     DecodeDataByte("key (note) number", s);
     DecodeDataByte("velocity", s);
 }

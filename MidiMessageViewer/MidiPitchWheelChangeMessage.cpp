@@ -16,11 +16,11 @@
 
 #include "MidiPitchWheelChangeMessage.h"
 
-void MidiPitchWheelChangeMessage::DecodeSelf(BinData::FileStream* s)
+void MidiPitchWheelChangeMessage::FinishDecoding(BinData::FileStream* s)
 {
     type = MidiEventType::PitchWheelChangeMessage;
-    typeText = "Pitch Wheel Change";
-    MidiChannelMessage::DecodeSelf(s);
+    typeText += "Pitch Wheel Change";
+    //MidiChannelMessage::FinishDecoding(s);
 
     // The pitch wheel value is comprised of two 7-bit values that we need
     // to combine.

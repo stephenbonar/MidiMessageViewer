@@ -16,6 +16,14 @@
 
 #include "StatusByte.h"
 
+size_t StatusByte::BytesDecoded()
+{
+    if (hasDecoded)
+        return 1;
+    else
+        return 0;
+}
+
 MidiEventType StatusByte::EventType()
 {
     switch (byte->Value() >> StatusCodeTypeBitShift)
@@ -43,4 +51,17 @@ bool StatusByte::IsValid()
         return true;
     else
         return false;
+}
+
+std::string StatusByte::ToString()
+{
+    if (byte != nullptr)
+        return byte->ToString(BinData::Format::Hex);
+    else
+        return "";
+}
+
+void StatusByte::FinishDecoding(BinData::FileStream* s)
+{
+    s->Read(byte.get());    
 }

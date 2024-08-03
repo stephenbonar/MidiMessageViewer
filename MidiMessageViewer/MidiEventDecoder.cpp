@@ -18,62 +18,118 @@
 
 bool MidiEventDecoder::HasDecoded()
 {
-    if (subDecoder != nullptr)
-        return hasDecoded && subDecoder->HasDecoded();
-    else
-        return hasDecoded;
+    for (std::shared_ptr<MidiDataDecoder> subDecoder : subDecoders)
+    {
+        if (!subDecoder->HasDecoded())
+            return false;
+    }
+
+    return hasDecoded;
 }
 
 size_t MidiEventDecoder::Size()
 {   
-    if (subDecoder != nullptr)
-        return size + subDecoder->Size();
-    else
-        return size;
+    size_t subDecoderSize{ 0 };
+
+    for (std::shared_ptr<MidiDataDecoder> subDecoder : subDecoders)
+        subDecoderSize += subDecoder->Size();
+    
+    return size + subDecoderSize;
 }
 
 std::string MidiEventDecoder::ToString()
 {
-    if (subDecoder != nullptr)
-        return dataText + " " + subDecoder->ToString();
-    else 
-        return dataText; 
+    return dataText; 
 }
 
 std::string MidiEventDecoder::Details()
 {
-    if (subDecoder != nullptr)
-        return details + " " + subDecoder->Details();
-    else 
-        return details;
+    return details;
 }
 
 std::string MidiEventDecoder::TypeText()
 {
-    if (subDecoder != nullptr)
-        return typeText + " " + subDecoder->TypeText();
-    else 
-        return typeText; 
+    return typeText;
 }
 
 MidiEventType MidiEventDecoder::Type()
 {
-    if (subDecoder != nullptr)
-        return subDecoder->Type();
-    else 
-        return type;
+    return type;
+}
+
+std::shared_ptr<MidiDataDecoder> MidiEventDecoder::NextSubDecoder()
+{
+    if (!decodeQueue.empty())
+    {
+        std::shared_ptr<MidiDataDecoder> subDecoder = decodeQueue.front();
+        decodeQueue.pop_front();
+        return subDecoder;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+bool MidiEventDecoder::HasSubDecoders()
+{
+    if (!decodeQueue.empty())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 size_t MidiEventDecoder::BytesDecoded()
 {
-    if (subDecoder != nullptr)
-        return bytesDecoded + subDecoder->BytesDecoded();
-    else
-        return bytesDecoded;
+    size_t subDecoderBytesDecoded{ 0 };
+
+    if (subDecoders.size() > 0)
+    {
+        for (std::shared_ptr<MidiDataDecoder> subDecoder : subDecoders)
+            subDecoderBytesDecoded += subDecoder->BytesDecoded();
+    }
+
+    return bytesDecoded + subDecoderBytesDecoded;
 }
 
-void MidiEventDecoder::DecodeSelf(BinData::FileStream* s)
+BinData::UInt8Field MidiEventDecoder::ReadDataByte(BinData::FileStream* s)
+{
+    BinData::UInt8Field byte;
+    s->Read(&byte);
+    dataText += byte.ToString(BinData::Format::Hex) + " ";
+    return byte;
+}
+
+void MidiEventDecoder::DecodeDataByte(std::string label, BinData::FileStream* s)
+{
+    BinData::UInt8Field byte = ReadDataByte(s);
+    details += " " + label + " " + byte.ToString();
+}
+
+void MidiEventDecoder::DecodeDataField(std::string label, 
+                                       BinData::Field* f, 
+                                       BinData::FileStream* s)
+{
+    s->Read(f);
+    dataText += f->ToString(BinData::Format::Hex) + " ";
+    details += " " + label + " " + f->ToString();
+}
+
+void MidiEventDecoder::UpdateTypeInfo(MidiEventDecoder* subDecoder)
+{
+    type = subDecoder->Type();
+    typeText += " " + subDecoder->TypeText();
+    dataText += " " + subDecoder->ToString();
+    details += " " + subDecoder->Details();
+}
+
+/*
+void MidiEventDecoder::FinishDecoding(BinData::FileStream* s)
 {
     if (subDecoder != nullptr)
         subDecoder->Decode(s);
-}
+}*/

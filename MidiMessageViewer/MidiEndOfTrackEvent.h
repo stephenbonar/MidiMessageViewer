@@ -24,7 +24,7 @@
 class MidiEndOfTrackEvent : public MidiEventDecoder
 {
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

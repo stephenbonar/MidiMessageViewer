@@ -16,16 +16,24 @@
 
 #include "MidiSystemMessage.h"
 
-void MidiSystemMessage::DecodeSelf(BinData::FileStream* s)
+void MidiSystemMessage::StartDecoding(BinData::FileStream* s)
 {
-    typeText = "System";
+    typeText = "System Message";
+    type = MidiEventType::SystemMessage;
 
-    switch (statusByte.Data())
+    switch (statusByte->Data())
     {
         case SystemMessageReset:
-            subDecoder = std::make_unique<MidiMetaEvent>();
+            InitializeSubDecoderWithStatusByte<MidiMetaEvent>();
             break;
+        default:
+            type = MidiEventType::Unknown;
+            typeText += " Unknown";
     }
+}
 
-    MidiEventDecoder::DecodeSelf(s);
+
+void MidiSystemMessage::FinishDecoding(BinData::FileStream* s)
+{
+    UpdateTypeInfo(subDecoder.get());
 }

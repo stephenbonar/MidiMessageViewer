@@ -16,7 +16,7 @@
 
 #include "MidiEndOfTrackEvent.h"
 
-void MidiEndOfTrackEvent::DecodeSelf(BinData::FileStream* s)
+void MidiEndOfTrackEvent::FinishDecoding(BinData::FileStream* s)
 {
     BinData::UInt8Field param;
     s->Read(&param);
@@ -28,6 +28,6 @@ void MidiEndOfTrackEvent::DecodeSelf(BinData::FileStream* s)
         return;
     }
 
-    typeText = "End of Track";
+    typeText += "End of Track";
     type = MidiEventType::EndOfTrackEvent;
 }

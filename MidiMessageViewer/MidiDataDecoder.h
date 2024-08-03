@@ -44,21 +44,13 @@ public:
     /// @return Returns true if decoding has completed, otherwise false.
     virtual bool HasDecoded() = 0;
 
+    /// @brief Determines the number of bytes that have been decoded so far. 
+    /// @return The number of bytes. 
+    virtual size_t BytesDecoded() = 0;
+
     /// @brief Provides a string representation of the decoded data.
     /// @return The string representing the decoded data.
     virtual std::string ToString() = 0;
-
-    /*
-    /// @brief Provides a string representation of the decoded data.
-    /// @return The string representing the decoded data.
-    virtual std::string ToString() = 0;
-
-    virtual std::string Details() = 0;
-
-    virtual std::string TypeText() = 0;
-
-    virtual MidiDataType Type() = 0;
-    */
 
     /// @brief Decodes the data at the current position in the file stream.
     ///
@@ -95,19 +87,9 @@ protected:
     /// @return A shared pointer to the next decoder, or nullptr if no more.
     virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() = 0;
 
-    /// @brief Determines the number of bytes that have been decoded so far. 
-    /// @return The number of bytes. 
-    virtual size_t BytesDecoded() = 0;
+    virtual void StartDecoding(BinData::FileStream* s) { }
 
-    /// @brief Decodes any data that is not decoded by sub-decoders.
-    ///
-    /// This method is called internally by the Decode() method to decode any
-    /// remaining data in the file stream that has not been decoded by
-    /// sub-decoders. This method should be implemented with this functionality
-    /// in mind. 
-    ///
-    /// @param s The file stream from which to decode data.
-    virtual void DecodeSelf(BinData::FileStream* s) = 0;
+    virtual void FinishDecoding(BinData::FileStream* s) { }
 };
 
 #endif

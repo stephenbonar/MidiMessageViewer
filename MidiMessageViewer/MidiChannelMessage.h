@@ -17,6 +17,7 @@
 #ifndef MIDI_CHANNEL_MESSAGE_H
 #define MIDI_CHANNEL_MESSAGE_H
 
+#include <memory>
 #include "MidiMessage.h"
 #include "MidiConstants.h"
 #include "StatusByte.h"
@@ -25,10 +26,11 @@
 class MidiChannelMessage : public MidiMessage
 {
 public:
-    MidiChannelMessage(StatusByte statusByte) : MidiMessage(statusByte)
-    {
-        statusDataLabel = "channel";
-    }
+    MidiChannelMessage(std::shared_ptr<StatusByte> statusByte) 
+        : MidiMessage(statusByte)
+    { }
+protected:
+    virtual void StartDecoding(BinData::FileStream* s) override;
 };
 
 #endif

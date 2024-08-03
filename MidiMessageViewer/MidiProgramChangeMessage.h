@@ -17,6 +17,7 @@
 #ifndef MIDI_PROGRAM_CHANGE_MESSAGE_H
 #define MIDI_PROGRAM_CHANGE_MESSAGE_H
 
+#include <memory>
 #include "MidiChannelMessage.h"
 #include "MidiConstants.h"
 #include "StatusByte.h"
@@ -24,11 +25,11 @@
 class MidiProgramChangeMessage : public MidiChannelMessage
 {
 public:
-    MidiProgramChangeMessage(StatusByte statusByte) 
+    MidiProgramChangeMessage(std::shared_ptr<StatusByte> statusByte) 
         : MidiChannelMessage(statusByte)
     { }
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

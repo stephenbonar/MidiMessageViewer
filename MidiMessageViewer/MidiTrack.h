@@ -46,7 +46,7 @@ protected:
 
     virtual size_t BytesDecoded() override;
 
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 private:
     bool hasDecoded;
     std::shared_ptr<BinData::ChunkHeader> trackHeader;

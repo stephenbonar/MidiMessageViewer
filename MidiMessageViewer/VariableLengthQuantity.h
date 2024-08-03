@@ -48,7 +48,7 @@ protected:
         return hasDecoded ? bytes.size() : 0; 
     }
 
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 private:
     bool hasDecoded;
     std::vector<BinData::UInt8Field> bytes;

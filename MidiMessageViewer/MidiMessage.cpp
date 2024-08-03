@@ -17,22 +17,8 @@
 
 #include "MidiMessage.h"
 
-BinData::UInt8Field MidiMessage::ReadDataByte(BinData::FileStream* s)
+void MidiMessage::DecodeStatusData(std::string label, BinData::FileStream* s)
 {
-    BinData::UInt8Field byte;
-    s->Read(&byte);
-    dataText += byte.ToString(BinData::Format::Hex) + " ";
-    return byte;
-}
-
-void MidiMessage::DecodeDataByte(std::string label, BinData::FileStream* s)
-{
-    BinData::UInt8Field byte = ReadDataByte(s);
-    details += " " + label + " " + byte.ToString();
-}
-
-void MidiMessage::DecodeSelf(BinData::FileStream* s)
-{
-    details = statusDataLabel;
-    details += " " + std::to_string(statusByte.Data());
+    details = label;
+    details += " " + std::to_string(statusByte->Data());
 }

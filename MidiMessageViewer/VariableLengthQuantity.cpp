@@ -16,7 +16,7 @@
 
 #include "VariableLengthQuantity.h"
 
-void VariableLengthQuantity::DecodeSelf(BinData::FileStream* s)
+void VariableLengthQuantity::FinishDecoding(BinData::FileStream* s)
 {
     BinData::UInt8Field currentByte{ 0, BinData::Endianness::Big };
 

@@ -19,25 +19,25 @@
 
 #include <string>
 #include <sstream>
+#include <memory>
 #include "BinData.h"
 #include "VariableLengthQuantity.h"
 #include "MidiConstants.h"
 #include "MidiEventType.h"
 #include "MidiEvent.h"
 #include "MidiEventDecoder.h"
-#include "MidiControlChangeMessage.h"
-#include "MidiProgramChangeMessage.h"
-#include "MidiSystemMessage.h"
-#include "StatusByte.h"
 
 class MidiTrackEvent : public MidiEventDecoder
 {
 public:
-    std::string DeltaTime() { return std::to_string(deltaTime.Value()); }
+    std::string DeltaTime();
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void StartDecoding(BinData::FileStream* s) override;
+
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 private:
-    VariableLengthQuantity deltaTime;
+    std::shared_ptr<VariableLengthQuantity> deltaTime;
+    std::shared_ptr<MidiEvent> midiEvent;
 };
 
 #endif

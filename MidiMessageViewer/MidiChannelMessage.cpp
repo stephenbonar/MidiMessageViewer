@@ -15,3 +15,10 @@
 // limitations under the License.
 
 #include "MidiChannelMessage.h"
+
+void MidiChannelMessage::StartDecoding(BinData::FileStream* s)
+{
+    typeText += "Channel Message: ";
+    type = MidiEventType::ChannelMessage;
+    DecodeStatusData("channel", s);
+}

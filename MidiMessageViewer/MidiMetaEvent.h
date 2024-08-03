@@ -17,15 +17,23 @@
 #ifndef MIDI_META_EVENT_H
 #define MIDI_META_EVENT_H
 
-#include "MidiEventDecoder.h"
+#include <memory>
+#include "MidiMessage.h"
 #include "MidiConstants.h"
 #include "MidiTempoChangeEvent.h"
 #include "MidiEndOfTrackEvent.h"
+#include "StatusByte.h"
 
-class MidiMetaEvent : public MidiEventDecoder
+class MidiMetaEvent : public MidiMessage
 {
+public:
+    MidiMetaEvent(std::shared_ptr<StatusByte> statusByte) 
+        : MidiMessage(statusByte)
+    { }
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void StartDecoding(BinData::FileStream* s) override;
+
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

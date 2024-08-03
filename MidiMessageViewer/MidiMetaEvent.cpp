@@ -16,24 +16,28 @@
 
 #include "MidiMetaEvent.h"
 
-void MidiMetaEvent::DecodeSelf(BinData::FileStream* s)
+void MidiMetaEvent::StartDecoding(BinData::FileStream* s)
 {
     BinData::UInt8Field opcode;
     s->Read(&opcode);
     dataText = opcode.ToString(BinData::Format::Hex);
-    typeText = "Meta";
+    typeText += "Reset: Meta Event -";
 
     switch (opcode.Value())
     {
         case MetaEventTempo:
-            subDecoder = std::make_unique<MidiTempoChangeEvent>();
+            InitializeSubDecoder<MidiTempoChangeEvent>();
             break;
         case MetaEventEndOfTrack:
-            subDecoder = std::make_unique<MidiEndOfTrackEvent>();
+            InitializeSubDecoder<MidiEndOfTrackEvent>();
             break;
         default:
-            typeText = "Unknown";
+            typeText += " Unknown";
+            type = MidiEventType::Unknown;
     }
+}
 
-    MidiEventDecoder::DecodeSelf(s);
+void MidiMetaEvent::FinishDecoding(BinData::FileStream* s)
+{
+    UpdateTypeInfo(subDecoder.get());
 }

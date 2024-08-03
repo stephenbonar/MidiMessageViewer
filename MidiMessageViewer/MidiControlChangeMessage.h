@@ -17,17 +17,18 @@
 #ifndef MIDI_CONTROL_CHANGE_MESSAGE_H
 #define MIDI_CONTROL_CHANGE_MESSAGE_H
 
+#include <memory>
 #include "MidiChannelMessage.h"
 #include "StatusByte.h"
 
 class MidiControlChangeMessage : public MidiChannelMessage
 {
 public:
-    MidiControlChangeMessage(StatusByte statusByte) 
+    MidiControlChangeMessage(std::shared_ptr<StatusByte> statusByte) 
         : MidiChannelMessage(statusByte)
     { }
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

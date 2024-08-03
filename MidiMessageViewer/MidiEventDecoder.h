@@ -17,6 +17,9 @@
 #ifndef MIDI_EVENT_DECODER_H
 #define MIDI_EVENT_DECODER_H
 
+#include <vector>
+#include <deque>
+#include <memory>
 #include "MidiDataDecoder.h"
 #include "MidiEventType.h"
 
@@ -30,8 +33,7 @@ public:
         typeText{ "" }, 
         details{ "" }, 
         dataText{ "" },
-        hasDecoded{ false },
-        subDecoder{ nullptr }
+        hasDecoded{ false }
     { }
 
     /// @brief The amount of bytes the decoder is expected to decode.
@@ -41,6 +43,8 @@ public:
     /// @brief Determines whether or not the decoder has already decoded data.
     /// @return Returns true if decoding has completed, otherwise false.
     virtual bool HasDecoded() override;
+
+    virtual size_t BytesDecoded() override;
 
     /// @brief Provides a string representation of the decoded data.
     /// @return The string representing the decoded data.
@@ -59,18 +63,25 @@ protected:
     std::string details;
     std::string dataText;
     bool hasDecoded;
-    std::unique_ptr<MidiEventDecoder> subDecoder;
+    std::vector<std::shared_ptr<MidiDataDecoder>> subDecoders;
+    std::deque<std::shared_ptr<MidiDataDecoder>> decodeQueue;
+    //std::unique_ptr<MidiEventDecoder> subDecoder;
 
-    virtual bool HasSubDecoders() override { return false; }
+    virtual bool HasSubDecoders() override;
 
-    virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() override
-    { 
-        return nullptr; 
-    }
+    virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() override;
 
-    virtual size_t BytesDecoded() override;
+    virtual BinData::UInt8Field ReadDataByte(BinData::FileStream* s);
 
-    virtual void DecodeSelf(BinData::FileStream* s);
+    virtual void DecodeDataByte(std::string label, BinData::FileStream* s);
+
+    virtual void DecodeDataField(std::string label, 
+                                 BinData::Field* f, 
+                                 BinData::FileStream* s);
+
+    virtual void UpdateTypeInfo(MidiEventDecoder* subDecoder);
+
+    //virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

@@ -16,10 +16,10 @@
 
 #include "MidiProgramChangeMessage.h"
 
-void MidiProgramChangeMessage::DecodeSelf(BinData::FileStream* s)
+void MidiProgramChangeMessage::FinishDecoding(BinData::FileStream* s)
 {
     type = MidiEventType::ProgramChangeMessage;
-    typeText = "Program Change";
-    MidiChannelMessage::DecodeSelf(s);
+    typeText += "Program Change";
+    //MidiChannelMessage::FinishDecoding(s);
     DecodeDataByte("program", s);
 }

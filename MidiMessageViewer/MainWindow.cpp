@@ -25,8 +25,6 @@ enum ID
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "MidiMessageViewer")
 {
     wxPanel* topPanel = new wxPanel{ this, wxID_ANY, wxDefaultPosition };
-    //wxPanel* bottomPanel = new wxPanel{ this, wxID_ANY, wxDefaultPosition };
-    //bottomPanel->SetBackgroundColour(wxColour{ *wxBLUE });
 
     wxBoxSizer* topSizer = new wxBoxSizer{ wxHORIZONTAL };
     wxBoxSizer* frameSizer = new wxBoxSizer{ wxVERTICAL };

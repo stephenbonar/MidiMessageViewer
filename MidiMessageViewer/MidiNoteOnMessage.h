@@ -17,16 +17,18 @@
 #ifndef MIDI_NOTE_ON_MESSAGE_H
 #define MIDI_NOTE_ON_MESSAGE_H
 
+#include <memory>
 #include "MidiChannelMessage.h"
 #include "StatusByte.h"
 
 class MidiNoteOnMessage : public MidiChannelMessage
 {
 public:
-    MidiNoteOnMessage(StatusByte statusByte) : MidiChannelMessage(statusByte)
+    MidiNoteOnMessage(std::shared_ptr<StatusByte> statusByte)
+        : MidiChannelMessage(statusByte)
     { }
 
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

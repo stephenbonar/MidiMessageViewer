@@ -57,7 +57,7 @@ size_t MidiTrack::BytesDecoded()
     return bytesDecoded;
 }
 
-void MidiTrack::DecodeSelf(BinData::FileStream* s)
+void MidiTrack::FinishDecoding(BinData::FileStream* s)
 {
     if (events.back()->Type() != MidiEventType::Unknown)
     {

@@ -18,6 +18,8 @@
 #define MIDI_MESSAGE_H
 
 #include <string>
+#include <memory>
+#include "MidiDataDecoder.h"
 #include "MidiEventDecoder.h"
 #include "MidiConstants.h"
 #include "StatusByte.h"
@@ -26,18 +28,32 @@
 class MidiMessage : public MidiEventDecoder
 {
 public:
-    MidiMessage(StatusByte statusByte) 
+    MidiMessage(std::shared_ptr<StatusByte> statusByte) 
         : statusByte{ statusByte }
-    { }
+    {
+        size = 1;
+    }
 protected:
-    StatusByte statusByte;
-    std::string statusDataLabel;
+    std::shared_ptr<StatusByte> statusByte;
+    std::shared_ptr<MidiEventDecoder> subDecoder;
 
-    virtual BinData::UInt8Field ReadDataByte(BinData::FileStream* s);
+    virtual void DecodeStatusData(std::string label, BinData::FileStream* s);
 
-    virtual void DecodeDataByte(std::string label, BinData::FileStream* s);
+    template <typename T>
+    void InitializeSubDecoderWithStatusByte()
+    {
+        subDecoder = std::make_shared<T>(statusByte);
+        subDecoders.push_back(subDecoder);
+        decodeQueue.push_back(subDecoder);
+    }
 
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    template <typename T>
+    void InitializeSubDecoder()
+    {
+        subDecoder = std::make_shared<T>();
+        subDecoders.push_back(subDecoder);
+        decodeQueue.push_back(subDecoder);
+    }
 };
 
 #endif

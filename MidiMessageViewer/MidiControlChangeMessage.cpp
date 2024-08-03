@@ -16,11 +16,11 @@
 
 #include "MidiControlChangeMessage.h"
 
-void MidiControlChangeMessage::DecodeSelf(BinData::FileStream* s)
+void MidiControlChangeMessage::FinishDecoding(BinData::FileStream* s)
 {
     type = MidiEventType::ControlChangeMessage;
-    typeText = "Control Change";
-    MidiChannelMessage::DecodeSelf(s);
+    typeText += "Control Change";
+    MidiChannelMessage::FinishDecoding(s);
     DecodeDataByte("control number", s);
     DecodeDataByte("value", s);
 }

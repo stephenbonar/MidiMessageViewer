@@ -27,6 +27,7 @@ enum class MidiEventType
     ProgramChangeMessage,
     ChannelPressureMessage,
     PitchWheelChangeMessage,
+    ChannelMessage,
     SystemMessage,
     TempoChangeEvent,
     EndOfTrackEvent

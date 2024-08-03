@@ -16,13 +16,11 @@
 
 #include "MidiTempoChangeEvent.h"
 
-void MidiTempoChangeEvent::DecodeSelf(BinData::FileStream* s)
+void MidiTempoChangeEvent::FinishDecoding(BinData::FileStream* s)
 {
-    BinData::UInt8Field param;
-    BinData::UInt24Field tempo;
-
     //ReadData(s, &param);
     s->Read(&param);
+    dataText += param.ToString(BinData::Format::Hex) + " ";
 
     if (param.Value() != MetaEventTempoPrefix)
     {
@@ -30,11 +28,15 @@ void MidiTempoChangeEvent::DecodeSelf(BinData::FileStream* s)
         return;
     }
 
-    s->Read(&tempo);
+    DecodeDataField("Tempo", &tempo, s);
+    //s->Read(&tempo);
     type = MidiEventType::TempoChangeEvent;
     typeText = "Tempo Change";
-    dataText = param.ToString(BinData::Format::Hex) 
-        + " " 
-        + tempo.ToString(BinData::Format::Hex);
-    details = "Tempo " + tempo.ToString() + " microseconds per quarter note";
+    //dataText = param.ToString(BinData::Format::Hex) 
+    //    + " " 
+    //    + tempo.ToString(BinData::Format::Hex);
+    //details = "Tempo " + tempo.ToString() + " microseconds per quarter note";
+
+    bytesDecoded = size;
+    hasDecoded = true;
 }

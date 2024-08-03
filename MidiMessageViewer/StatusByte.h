@@ -20,15 +20,32 @@
 #include <memory>
 #include "MidiConstants.h"
 #include "MidiEventType.h"
+#include "MidiDataDecoder.h"
 #include "BinData.h"
 
-class StatusByte
+class StatusByte : public MidiDataDecoder
 {
 public:
-    StatusByte() : isRunning{ false }
-    {
+    StatusByte() : isRunning{ false }, hasDecoded{ false }
+    { 
         byte = std::make_shared<BinData::UInt8Field>();
     }
+
+    /// @brief The amount of bytes the decoder is expected to decode.
+    /// @return The number of bytes. 
+    virtual size_t Size() override { return 1; }
+
+    /// @brief Determines whether or not the decoder has already decoded data.
+    /// @return Returns true if decoding has completed, otherwise false.
+    virtual bool HasDecoded() override { return hasDecoded; }
+
+    /// @brief Determines the number of bytes that have been decoded so far. 
+    /// @return The number of bytes. 
+    virtual size_t BytesDecoded() override;
+
+    /// @brief Provides a string representation of the decoded data.
+    /// @return The string representing the decoded data.
+    virtual std::string ToString() override;
 
     MidiEventType EventType();
 
@@ -41,8 +58,31 @@ public:
     bool IsRunning() { return isRunning; };
 
     void SetIsRunning(bool value) { isRunning = value; }
+protected:
+    /// @brief Determines if there are any more child decoders to decode.
+    ///
+    /// This method is called internally by the Decode() method, so it should
+    /// be implemented with this purpose in mind.
+    ///
+    /// @return Returns true if there are any remaining decoders, else false.
+    virtual bool HasSubDecoders() override { return false; }
+
+    /// @brief Provides the next child decoder to decode.
+    ///
+    /// This method is called internally by the Decode() method to retrieve
+    /// the next child decoder and decode the remainng data with it. This 
+    /// method should be implemented with this purpose in mind.
+    ///
+    /// @return A shared pointer to the next decoder, or nullptr if no more.
+    virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() override 
+    {
+        return nullptr; 
+    }
+
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 private:
     bool isRunning;
+    bool hasDecoded;
     std::shared_ptr<BinData::UInt8Field> byte;
 };
 

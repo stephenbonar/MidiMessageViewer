@@ -18,11 +18,17 @@
 
 void MidiDataDecoder::Decode(BinData::FileStream* s)
 {
+    StartDecoding(s);
+
     while (HasSubDecoders())
     {
         std::shared_ptr<MidiDataDecoder> next = NextSubDecoder();
-        next->Decode(s);
+
+        if (next != nullptr)
+            next->Decode(s);
+        else
+            break;
     }
 
-    DecodeSelf(s);
+    FinishDecoding(s);
 }

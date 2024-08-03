@@ -16,13 +16,27 @@
 
 #include "MidiTrackEvent.h"
 
-void MidiTrackEvent::DecodeSelf(BinData::FileStream* s)
+std::string MidiTrackEvent::DeltaTime()
 {
-    deltaTime.Decode(s);
-    bytesDecoded += deltaTime.Size();
-    dataText = deltaTime.ToString();
+    if (deltaTime != nullptr)
+        return std::to_string(deltaTime->Value());
+    else
+        return "N/A";
+}
 
-    subDecoder = std::make_unique<MidiEvent>();
+void MidiTrackEvent::StartDecoding(BinData::FileStream* s)
+{
+    deltaTime = std::make_shared<VariableLengthQuantity>();
+    subDecoders.push_back(deltaTime);
+    decodeQueue.push_back(deltaTime);
 
-    MidiEventDecoder::DecodeSelf(s);
+    midiEvent = std::make_shared<MidiEvent>();
+    subDecoders.push_back(midiEvent);
+    decodeQueue.push_back(midiEvent);
+}
+
+void MidiTrackEvent::FinishDecoding(BinData::FileStream* s)
+{
+    dataText += deltaTime->ToString();
+    UpdateTypeInfo(midiEvent.get());
 }

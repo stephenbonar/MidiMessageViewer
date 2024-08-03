@@ -17,6 +17,7 @@
 #ifndef MIDI_SYSTEM_MESSAGE_H
 #define MIDI_SYSTEM_MESSAGE_H
 
+#include <memory>
 #include "MidiMessage.h"
 #include "MidiConstants.h"
 #include "MidiMetaEvent.h"
@@ -26,10 +27,13 @@
 class MidiSystemMessage : public MidiMessage
 {
 public:
-    MidiSystemMessage(StatusByte statusByte) : MidiMessage(statusByte)
+    MidiSystemMessage(std::shared_ptr<StatusByte> statusByte)
+        : MidiMessage(statusByte)
     { }
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void StartDecoding(BinData::FileStream* s) override;
+
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

@@ -23,8 +23,13 @@
 
 class MidiTempoChangeEvent : public MidiEventDecoder
 {
+public:
+    MidiTempoChangeEvent() { size = param.Size() + tempo.Size(); }
 protected:
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
+private:
+    BinData::UInt8Field param;
+    BinData::UInt24Field tempo;
 };
 
 #endif

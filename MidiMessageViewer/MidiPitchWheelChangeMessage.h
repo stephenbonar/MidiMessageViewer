@@ -17,17 +17,18 @@
 #ifndef MIDI_PITCH_WHEEL_CHANGE_MESSAGE_H
 #define MIDI_PITCH_WHEEL_CHANGE_MESSAGE_H
 
+#include <memory>
 #include "MidiChannelMessage.h"
 #include "StatusByte.h"
 
 class MidiPitchWheelChangeMessage : public MidiChannelMessage
 {
 public:
-    MidiPitchWheelChangeMessage(StatusByte statusByte) : 
-        MidiChannelMessage(statusByte)
+    MidiPitchWheelChangeMessage(std::shared_ptr<StatusByte> statusByte)
+        : MidiChannelMessage(statusByte)
     { }
 
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif

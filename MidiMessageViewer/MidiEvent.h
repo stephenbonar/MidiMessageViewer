@@ -19,22 +19,26 @@
 
 #include <memory>
 #include <string>
-#include "StatusByte.h"
 #include "MidiEventDecoder.h"
+#include "MidiMessage.h"
 #include "MidiNoteOnMessage.h"
 #include "MidiControlChangeMessage.h"
 #include "MidiProgramChangeMessage.h"
 #include "MidiPitchWheelChangeMessage.h"
 #include "MidiSystemMessage.h"
+#include "StatusByte.h"
 
 class MidiEvent : public MidiEventDecoder
 {
 protected:
-    static StatusByte lastStatusByte;
+    static std::shared_ptr<StatusByte> lastStatusByte;
 
-    StatusByte statusByte;
-    
-    virtual void DecodeSelf(BinData::FileStream* s) override;
+    std::shared_ptr<StatusByte> statusByte;
+    std::shared_ptr<MidiMessage> midiMessage;
+
+    virtual void StartDecoding(BinData::FileStream* s) override;
+
+    virtual void FinishDecoding(BinData::FileStream* s) override;
 };
 
 #endif
