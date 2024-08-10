@@ -54,20 +54,21 @@ public:
 
     /// @brief Decodes the data at the current position in the file stream.
     ///
-    /// The default implementation of this method calls NextSubDecoder() 
-    /// repeatedly to obtain and decode each sub-decoder (child instances of
-    /// types derived from MidiDataDecoder) until HasSubDecoders() returns
-    /// false. Finally, it calls DecodeSelf() to decode itself. This 
-    /// functionality can be adjusted by overriding this method in a derived
-    /// class, but it is not required to do so if this implementation is
-    /// sufficient.
+    /// The default implementation of this method first calls StartDecoding(),
+    /// which runs the decoding logic that needs to happen at the beginning.
+    /// Then, it calls NextSubDecoder() repeatedly to obtain and decode each 
+    /// sub-decoder (child instances of types derived from MidiDataDecoder) 
+    /// until HasSubDecoders() returns false. Finally, it calls 
+    /// FinishDecoding(), which runs decoding logic that needs to happen at
+    /// the end.
     ///
-    /// It is important for derived types to define HasSubDecoders(),
-    /// NextSubDecoder(), and DecodeSelf() with this implementation in mind.
+    /// Derived classes must provide implementations for all of the methods
+    /// the Decode() method calls. It is important to design these 
+    /// implementations with the behavior of the Decode() method in mind. 
     /// They are protected methods and will thus only be used internally by
     /// this method. But this method (Decode) is the one exposed publically.
     ///
-    /// @param s The file stream from which to decode data.
+    /// @param s The file stream to decode.
     virtual void Decode(BinData::FileStream* s);
 protected:
     /// @brief Determines if there are any more child decoders to decode.
@@ -81,14 +82,25 @@ protected:
     /// @brief Provides the next child decoder to decode.
     ///
     /// This method is called internally by the Decode() method to retrieve
-    /// the next child decoder and decode the remainng data with it. This 
-    /// method should be implemented with this purpose in mind.
+    /// the next child decoder and decode the remainng data with it.
     ///
     /// @return A shared pointer to the next decoder, or nullptr if no more.
     virtual std::shared_ptr<MidiDataDecoder> NextSubDecoder() = 0;
 
+    /// @brief Provides the decoding logic to run at the beginning.
+    ///
+    /// Thie method is called internally by the Decode() method to run the
+    /// decoding logic that needs to happen at the start of decoding.
+    ///
+    /// @param s The file stream to decode.
     virtual void StartDecoding(BinData::FileStream* s) { }
 
+    /// @brief Provides the decoding logic to run at the end.
+    ///
+    /// This method is called internally by the Decode() method to run the
+    /// decoding logic that needs to happen at the end of decoding.
+    ///
+    /// @param s The file stream to decode. 
     virtual void FinishDecoding(BinData::FileStream* s) { }
 };
 

@@ -26,18 +26,31 @@
 #include "MidiFile.h"
 #include "MidiTrack.h"
 
+/// @brief Represents the application's main window. 
 class MainWindow : public wxFrame
 {
 public:
+    /// @brief Default constructor; creates a new instance of MainWindow. 
     MainWindow();
 private:
     wxComboBox* trackComboBox;
     wxListView* messageListView;
     std::unique_ptr<MidiFile> currentFile;
 
+    /// @brief The event handler for the Open File menu item.
+    /// @param event The event that fired.
     void OnOpen(wxCommandEvent& event);
+
+    /// @brief The event handler for exiting the application.
+    /// @param event The event that fired.
     void OnExit(wxCommandEvent& event);
+
+    /// @brief The event handler for the About menu item. 
+    /// @param event The event that fired.
     void OnAbout(wxCommandEvent& event);
+
+    /// @brief The event handler for the track selection drop-down. 
+    /// @param event The event that fired.
     void OnTrackSelect(wxCommandEvent& event);
 };
 
