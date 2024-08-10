@@ -22,9 +22,7 @@
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <wx/combobox.h>
-#include "BinData.h"
-#include "MidiFile.h"
-#include "MidiTrack.h"
+#include "MidiData.h"
 
 /// @brief Represents the application's main window. 
 class MainWindow : public wxFrame
@@ -35,7 +33,7 @@ public:
 private:
     wxComboBox* trackComboBox;
     wxListView* messageListView;
-    std::unique_ptr<MidiFile> currentFile;
+    std::unique_ptr<MidiData::File> currentFile;
 
     /// @brief The event handler for the Open File menu item.
     /// @param event The event that fired.

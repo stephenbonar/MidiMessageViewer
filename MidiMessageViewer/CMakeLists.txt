@@ -17,32 +17,14 @@
 # Define the sources used to build the executable.
 set(SOURCES
     MainWindow.cpp
-    MidiChannelMessage.cpp
-    MidiNoteOnMessage.cpp
-    MidiControlChangeMessage.cpp
-    MidiPitchWheelChangeMessage.cpp
-    MidiDataDecoder.cpp
-    MidiEndOfTrackEvent.cpp
-    MidiEvent.cpp
-    MidiEventDecoder.cpp
-    MidiFile.cpp
-    MidiMessage.cpp
-    MidiMessageViewer.cpp 
-    MidiMetaEvent.cpp
-    MidiProgramChangeMessage.cpp
-    MidiSystemMessage.cpp
-    MidiTempoChangeEvent.cpp
-    MidiTrack.cpp 
-    MidiTrackEvent.cpp
-    StatusByte.cpp
-    VariableLengthQuantity.cpp 
-    )
+    MidiMessageViewer.cpp)
 
 # Define the additional libraries the GUI needs to link with. 
-set(LIBRARIES LibCppBinData wx::net wx::core wx::base)
+set(LIBRARIES LibCppMidiData wx::net wx::core wx::base)
 
 # Defines the locations of header files to include.
-set (INCLUDES ${PROJECT_SOURCE_DIR}/LibCppBinData/LibCppBinData)
+set (INCLUDES 
+    ${PROJECT_SOURCE_DIR}/LibCppMidiData/LibCppMidiData)
 
 # Define the Windows GUI executable target.
 if(WIN32)

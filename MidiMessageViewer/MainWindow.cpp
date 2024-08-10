@@ -78,7 +78,7 @@ void MainWindow::OnExit(wxCommandEvent& event)
 
 void MainWindow::OnAbout(wxCommandEvent& event)
 {
-    wxMessageBox("This function is not yet implemented.",
+    wxMessageBox("v0.51",
                  "MidiMessageViewer", wxOK | wxICON_INFORMATION);
 }
 
@@ -90,7 +90,7 @@ void MainWindow::OnOpen(wxCommandEvent& event)
 
     if (dialog.ShowModal() == wxID_OK)
     {
-        currentFile = std::make_unique<MidiFile>(dialog.GetPath().ToStdString());
+        currentFile = std::make_unique<MidiData::File>(dialog.GetPath().ToStdString());
         currentFile->Load();
 
         std::stringstream status;

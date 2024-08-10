@@ -15,7 +15,7 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.5.0)
-project(MidiMessageViewer VERSION 0.1.0 LANGUAGES C CXX)
+project(MidiMessageViewer VERSION 0.51.0 LANGUAGES C CXX)
 
 # Specify the C++ standard.
 set(CMAKE_CXX_STANDARD 17)
@@ -28,4 +28,4 @@ add_subdirectory(MidiMessageViewer)
 
 add_subdirectory(wxWidgets)
 
-add_subdirectory(LibCppBinData)
+add_subdirectory(LibCppMidiData)

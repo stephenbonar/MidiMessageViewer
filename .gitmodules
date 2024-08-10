@@ -1,6 +1,6 @@
 [submodule "wxWidgets"]
 	path = wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets
-[submodule "LibCppBinData"]
-	path = LibCppBinData
-	url = https://github.com/stephenbonar/LibCppBinData
+[submodule "LibCppMidiData"]
+	path = LibCppMidiData
+	url = https://github.com/stephenbonar/LibCppMidiData
