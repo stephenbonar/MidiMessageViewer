@@ -78,7 +78,7 @@ void MainWindow::OnExit(wxCommandEvent& event)
 
 void MainWindow::OnAbout(wxCommandEvent& event)
 {
-    wxMessageBox("v0.51",
+    wxMessageBox("v0.52",
                  "MidiMessageViewer", wxOK | wxICON_INFORMATION);
 }
 
