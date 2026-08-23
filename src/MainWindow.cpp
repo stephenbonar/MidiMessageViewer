@@ -78,7 +78,7 @@ void MainWindow::OnExit(wxCommandEvent& event)
 
 void MainWindow::OnAbout(wxCommandEvent& event)
 {
-    wxMessageBox("v0.51",
+    wxMessageBox("v0.1.0",
                  "MidiMessageViewer", wxOK | wxICON_INFORMATION);
 }
 
@@ -90,24 +90,30 @@ void MainWindow::OnOpen(wxCommandEvent& event)
 
     if (dialog.ShowModal() == wxID_OK)
     {
-        currentFile = std::make_unique<MidiData::File>(dialog.GetPath().ToStdString());
-        currentFile->Load();
+        currentFile = std::make_unique<Midi::File>(
+            dialog.GetPath().ToStdString());
+
+        wxMessageBox(currentFile->Path(), "Current MIDI File",
+                     wxOK | wxICON_INFORMATION);
+
+        //currentFile = std::make_unique<MidiData::File>(dialog.GetPath().ToStdString());
+        //currentFile->Load();
 
         std::stringstream status;
-        status << "Chunk Header: " << currentFile->Header().ID()->ToString() 
-               << ", Chunk Size: " << currentFile->Header().Size()->Value()
-               << ", Format: " << currentFile->HeaderData().Format()->Value()
-               << ", Num Tracks: " << currentFile->HeaderData().NumTracks()->Value()
-               << ", Division: " << currentFile->HeaderData().NumTracks()->Value();
+        //status << "Chunk Header: " << currentFile->Header().ID()->ToString() 
+        //       << ", Chunk Size: " << currentFile->Header().Size()->Value()
+        //       << ", Format: " << currentFile->HeaderData().Format()->Value()
+        //       << ", Num Tracks: " << currentFile->HeaderData().NumTracks()->Value()
+        //       << ", Division: " << currentFile->HeaderData().NumTracks()->Value();
         SetStatusText(wxString{ status.str() });
 
         int trackNumber{ 0 };
 
-        for (auto track : currentFile->Tracks())
-        {
-            trackComboBox->AppendString(std::to_string(trackNumber));
-            trackNumber++;
-        }
+        //for (auto track : currentFile->Tracks())
+        //{
+        //    trackComboBox->AppendString(std::to_string(trackNumber));
+        //    trackNumber++;
+        //}
     }
 }
 
@@ -117,23 +123,23 @@ void MainWindow::OnTrackSelect(wxCommandEvent& event)
     int selectedTrack{ 0 };
     trackComboBox->GetValue().ToInt(&selectedTrack);
 
-    for (auto track : currentFile->Tracks())
-    {
-        if (trackNumber == selectedTrack)
-        {
-            int index{ 0 };
-            messageListView->DeleteAllItems();
+    //for (auto track : currentFile->Tracks())
+    //{
+    //    if (trackNumber == selectedTrack)
+    //    {
+    //        int index{ 0 };
+    //        messageListView->DeleteAllItems();
 
-            for (auto event : track.Events())
-            {
-                messageListView->InsertItem(index, event->ToString());
-                messageListView->SetItem(index, 1, event->DeltaTime());
-                messageListView->SetItem(index, 2, event->TypeText());
-                messageListView->SetItem(index, 3, event->Details());
-                index++;
-            }
-        }
+    //        for (auto event : track.Events())
+    //        {
+    //            messageListView->InsertItem(index, event->ToString());
+    //            messageListView->SetItem(index, 1, event->DeltaTime());
+    //            messageListView->SetItem(index, 2, event->TypeText());
+    //            messageListView->SetItem(index, 3, event->Details());
+    //            index++;
+    //        }
+    //    }
 
-        trackNumber++;
-    }
+    //    trackNumber++;
+    //}
 }

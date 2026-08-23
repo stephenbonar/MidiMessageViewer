@@ -1,6 +1,6 @@
 # CMakeLists.txt - CMakeLists for building the main program.
 #
-# Copyright (C) 2024 Stephen Bonar
+# Copyright (C) 2026 Stephen Bonar
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ set(SOURCES
     MidiMessageViewer.cpp)
 
 # Define the additional libraries the GUI needs to link with. 
-set(LIBRARIES LibCppMidiData wx::net wx::core wx::base)
+set(LIBRARIES LibCppMidi wx::net wx::core wx::base)
 
 # Defines the locations of header files to include.
 set (INCLUDES 
-    ${PROJECT_SOURCE_DIR}/LibCppMidiData/LibCppMidiData)
+    ${PROJECT_SOURCE_DIR}/include)
 
 # Define the Windows GUI executable target.
 if(WIN32)

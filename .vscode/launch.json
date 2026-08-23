@@ -8,7 +8,7 @@
             "name": "(lldb) macOS Launch App",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/MidiMessageViewer/MidiMessageViewer",
+            "program": "${workspaceFolder}/build/src/MidiMessageViewer.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -20,25 +20,12 @@
             "name": "(Windows) Launch App",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/MidiMessageViewer/Debug/MidiMessageViewer.exe",
+            "program": "${workspaceFolder}/build/src/Debug/MidiMessageViewer.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build/MidiMessageViewer/Debug/",
-            "environment": [],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "(Windows) Launch Tests",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/LibCppBinData/LibCppBinDataTests/Debug/bindatatests.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build/LibCppBinData/LibCppBinDataTests/Debug/",
+            "cwd": "${workspaceFolder}/build/src/Debug/",
             "environment": [],
             "console": "integratedTerminal"
         }
-
-
     ]
 }

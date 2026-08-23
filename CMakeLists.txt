@@ -1,6 +1,6 @@
 # CMakeLists.txt - CMakeLists for building the project.
 #
-# Copyright (C) 2024 Stephen Bonar
+# Copyright (C) 2026 Stephen Bonar
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,23 @@
 # See the License for the specific language governing permissionsand
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.5.0)
-project(MidiMessageViewer VERSION 0.51.0 LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.16.0)
+
+# Define the project metadata.
+project(MidiMessageViewer VERSION 0.1.0 LANGUAGES C CXX)
 
 # Specify the C++ standard.
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Statically link wxWidgets.
+# Statically link wxWidgets so users don't need to install it separately.
 set(wxBUILD_SHARED OFF)
 
-add_subdirectory(MidiMessageViewer)
+# Add the main source code directory to the project.
+add_subdirectory(src)
 
-add_subdirectory(wxWidgets)
+# Add the wxWidgets library to the project for creating the GUI.
+add_subdirectory(lib/wxWidgets)
 
-add_subdirectory(LibCppMidiData)
+# Add the LibCppMidi library to the project for parsing MIDI files.
+add_subdirectory(lib/LibCppMidi)

@@ -1,6 +1,6 @@
-[submodule "wxWidgets"]
-	path = wxWidgets
+[submodule "lib/wxWidgets"]
+	path = lib/wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets
-[submodule "LibCppMidiData"]
-	path = LibCppMidiData
-	url = https://github.com/stephenbonar/LibCppMidiData
+[submodule "lib/LibCppMidi"]
+	path = lib/LibCppMidi
+	url = https://github.com/stephenbonar/LibCppMidi
